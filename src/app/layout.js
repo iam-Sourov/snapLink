@@ -1,7 +1,8 @@
-// app/layout.js
 import "./globals.css";
-import QueryProvider from "@/utils/QueryProvider"; // Import it
-import { Toaster } from "@/components/ui/sonner"
+import QueryProvider from "@/utils/QueryProvider";
+import { Toaster } from "@/components/ui/sonner";
+import Navbar from "@/components/navbar";
+import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata = {
   title: "SnapLink",
@@ -10,13 +11,19 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        {/* Wrap the children with your QueryProvider */}
         <QueryProvider>
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange>
+            <Navbar />
+            {children}
+            <Toaster />
+          </ThemeProvider>
         </QueryProvider>
-        <Toaster />
       </body>
     </html>
   );

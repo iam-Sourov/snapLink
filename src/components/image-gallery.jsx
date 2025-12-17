@@ -1,9 +1,9 @@
-// components/image-gallery.jsx
+
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner"
-import { Copy, Trash2 } from "lucide-react"; // Icons
+import { Copy, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { deleteImage } from "@/actions/deleteImage";
 
@@ -22,7 +22,6 @@ export default function ImageGallery() {
   if (isLoading) return <p className="text-center mt-10">Loading Gallery...</p>;
   if (error) return <p className="text-center text-red-500">Error loading images</p>;
 
-  // --- COPY FUNCTION ---
   const handleCopy = (shortCode) => {
     const fullUrl = `${window.location.origin}/${shortCode}`;
     navigator.clipboard.writeText(fullUrl);
@@ -33,11 +32,10 @@ export default function ImageGallery() {
     const confirmDelete = confirm("Are you sure you want to delete this image?");
     if (!confirmDelete) return;
 
-    // Call the server action
     const result = await deleteImage(id);
 
     if (result.success) {
-      // If success, force the gallery to refresh immediately
+
       refetch();
     } else {
       alert("Failed to delete image");
@@ -47,10 +45,9 @@ export default function ImageGallery() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl mt-8">
       {images.map((image) => (
-        <div key={image._id} className="border rounded-lg overflow-hidden shadow-sm bg-white flex flex-col">
+        <div key={image._id} className="border rounded-lg overflow-hidden shadow-sm flex flex-col">
 
-          {/* Image */}
-          <div className="relative h-48 w-full bg-gray-100">
+          <div className="relative h-48 w-full bg-gray-100 ">
             <img
               src={image.originalUrl}
               alt="Uploaded"
@@ -60,8 +57,8 @@ export default function ImageGallery() {
 
           {/* Controls */}
           <div className="p-4 flex flex-col gap-3">
-            <div className="flex items-center justify-between bg-gray-50 p-2 rounded">
-              <span className="text-sm font-mono text-gray-600 truncate">
+            <div className="flex items-center justify-between  p-2 rounded">
+              <span className="text-sm font-mono  truncate">
                 /{image.shortCode}
               </span>
               <Button

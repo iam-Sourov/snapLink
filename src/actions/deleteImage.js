@@ -1,4 +1,4 @@
-// actions/deleteImage.js
+
 "use server";
 
 import clientPromise from "@/lib/mongodb";
@@ -11,14 +11,12 @@ export async function deleteImage(imageId) {
     const db = client.db("snaplink_db");
     const collection = db.collection("images");
 
-    // Convert string ID to MongoDB ObjectId
-    // This is crucial! MongoDB won't find the string "123", it needs ObjectId("123")
     const objectId = new ObjectId(imageId);
 
     const result = await collection.deleteOne({ _id: objectId });
 
     if (result.deletedCount === 1) {
-      revalidatePath("/"); // Refresh the cache
+      revalidatePath("/");
       return { success: true };
     } else {
       return { success: false, error: "Image not found" };
