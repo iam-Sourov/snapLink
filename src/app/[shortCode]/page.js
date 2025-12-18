@@ -5,8 +5,6 @@ import { redirect } from "next/navigation";
 export default async function RedirectPage({ params }) {
 
   const { shortCode } = await params;
-
-
   const client = await clientPromise;
   const db = client.db("snaplink_db");
   const collection = db.collection("images");

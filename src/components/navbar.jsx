@@ -2,11 +2,30 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Camera } from "lucide-react"; 
+// 1. Add SheetTitle to imports
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Menu, Camera, LogOut, User as UserIcon } from "lucide-react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 
+import { useEffect, useState } from "react";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+
 export default function Navbar() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    window.location.reload();
+  };
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-sm ">
       <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4">
@@ -15,53 +34,67 @@ export default function Navbar() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Camera className="h-5 w-5" />
             </div>
-            <span className="hidden font-bold sm:inline-block">
-              SnapLink
-            </span>
+            <span className="hidden font-bold sm:inline-block">SnapLink</span>
           </Link>
           <div className="hidden md:flex gap-6 items-center text-sm font-medium text-muted-foreground">
-            <Link href="/gallery" className="transition-colors hover:text-foreground">
-              Gallery
-            </Link>
-            <Link href="/about" className="transition-colors hover:text-foreground">
-              About
-            </Link>
+            <Link href="/gallery" className="transition-colors hover:text-foreground">Gallery</Link>
+            <Link href="/about" className="transition-colors hover:text-foreground">About</Link>
           </div>
         </div>
+
         <div className="flex items-center gap-2">
           <div className="mr-2">
             <AnimatedThemeToggler />
           </div>
-          <div className="hidden md:flex gap-2">
-            <Link href="/auth">
-              <Button variant="ghost" size="sm">Log in</Button>
-            </Link>
-            <Link href="/auth">
-              <Button size="sm">Get Started</Button>
-            </Link>
+
+          {/* DESKTOP AUTH */}
+          <div className="hidden md:flex gap-2 items-center">
+            {user ? (
+              <div className="flex items-center gap-4">
+                <div className="text-sm font-medium">{user.displayName || "User"}</div>
+                <Button onClick={handleLogout} variant="ghost" size="sm" className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Link href="/auth"><Button variant="ghost" size="sm">Log in</Button></Link>
+                <Link href="/auth"><Button size="sm">Get Started</Button></Link>
+              </>
+            )}
           </div>
+
+          {/* MOBILE MENU (SHEET) */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden">
+              <Button variant="ghost" className="px-0 text-base md:hidden">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
+
             <SheetContent side="right" className="pr-0">
+              {/* 2. Add the Hidden Title Here */}
+              <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+
               <div className="flex flex-col gap-4 px-6 mt-6">
                 <Link href="/" className="font-bold text-lg">SnapLink</Link>
-                <Link href="/gallery" className="text-muted-foreground hover:text-foreground">
-                  Gallery
-                </Link>
-                <Link href="/about" className="text-muted-foreground hover:text-foreground">
-                  About
-                </Link>
+                <Link href="/gallery" className="text-muted-foreground hover:text-foreground">Gallery</Link>
+                <Link href="/about" className="text-muted-foreground hover:text-foreground">About</Link>
                 <div className="h-px bg-border my-2" />
-                <Link href="/auth">
-                  <Button className="w-full">Sign In</Button>
-                </Link>
+
+                {user ? (
+                  <>
+                    <div className="flex items-center gap-2 text-sm font-medium">
+                      <UserIcon className="h-4 w-4" />
+                      {user.displayName || user.email}
+                    </div>
+                    <Button onClick={handleLogout} variant="destructive" className="w-full">Log Out</Button>
+                  </>
+                ) : (
+                  <Link href="/auth"><Button className="w-full">Sign In</Button></Link>
+                )}
               </div>
             </SheetContent>
           </Sheet>

@@ -1,5 +1,8 @@
 import UploadButton from "@/components/upload-button";
 import ImageGallery from "@/components/image-gallery";
+import { auth } from '@/lib/firebase';
+console.log("Firebase Auth Initialized:", auth);
+
 
 export default function Home() {
   return (
