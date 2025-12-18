@@ -1,8 +1,10 @@
 import "./globals.css";
 import QueryProvider from "@/utils/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
-import Navbar from "@/components/navbar";
-import { ThemeProvider } from "@/components/theme-provider"
+import Navbar from "@/components/navbar/navbar";
+import { ThemeProvider } from "@/components/themeProvider/theme-provider";
+import { AuthProvider } from "@/components/authProvider/auth-provider";
+import Footer from "@/components/footer/footer";
 
 export const metadata = {
   title: "SnapLink",
@@ -19,8 +21,11 @@ export default function RootLayout({ children }) {
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange>
-            <Navbar />
-            {children}
+            <AuthProvider>
+              <Navbar />
+              {children}
+              <Footer/>
+            </AuthProvider>
             <Toaster />
           </ThemeProvider>
         </QueryProvider>

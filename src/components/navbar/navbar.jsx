@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-// 1. Add SheetTitle to imports
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Menu, Camera, LogOut, User as UserIcon } from "lucide-react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
@@ -41,13 +40,10 @@ export default function Navbar() {
             <Link href="/about" className="transition-colors hover:text-foreground">About</Link>
           </div>
         </div>
-
         <div className="flex items-center gap-2">
           <div className="mr-2">
             <AnimatedThemeToggler />
           </div>
-
-          {/* DESKTOP AUTH */}
           <div className="hidden md:flex gap-2 items-center">
             {user ? (
               <div className="flex items-center gap-4">
@@ -64,8 +60,6 @@ export default function Navbar() {
               </>
             )}
           </div>
-
-          {/* MOBILE MENU (SHEET) */}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" className="px-0 text-base md:hidden">
@@ -75,15 +69,12 @@ export default function Navbar() {
             </SheetTrigger>
 
             <SheetContent side="right" className="pr-0">
-              {/* 2. Add the Hidden Title Here */}
               <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
-
               <div className="flex flex-col gap-4 px-6 mt-6">
                 <Link href="/" className="font-bold text-lg">SnapLink</Link>
                 <Link href="/gallery" className="text-muted-foreground hover:text-foreground">Gallery</Link>
                 <Link href="/about" className="text-muted-foreground hover:text-foreground">About</Link>
                 <div className="h-px bg-border my-2" />
-
                 {user ? (
                   <>
                     <div className="flex items-center gap-2 text-sm font-medium">

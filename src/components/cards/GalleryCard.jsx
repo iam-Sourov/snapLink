@@ -2,7 +2,7 @@
 
 import { Copy, Trash2, ExternalLink, BarChart2, Calendar, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import Link from "next/link";
@@ -10,19 +10,17 @@ import Link from "next/link";
 export default function GalleryCard({ data }) {
   const [copied, setCopied] = useState(false);
 
-  // Construct the full short URL (adjust domain as needed)
-  // Assuming the app runs on localhost:3000 for now
   const shortLink = `${typeof window !== "undefined" ? window.location.origin : ""}/${data.shortCode}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shortLink);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // Reset icon after 2s
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDelete = () => {
     if (confirm("Are you sure you want to delete this image?")) {
-      // Call your server action here, e.g., deleteImage(data._id)
+
       console.log("Deleting", data._id);
     }
   };
@@ -44,18 +42,14 @@ export default function GalleryCard({ data }) {
             size="icon"
             variant="secondary"
             className="h-8 w-8 bg-background/80 backdrop-blur-sm"
-            asChild
-          >
+            asChild>
             <Link href={data.originalUrl} target="_blank">
               <ExternalLink className="h-4 w-4" />
             </Link>
           </Button>
         </div>
       </div>
-
-      {/* 2. CARD CONTENT (Link & Stats) */}
       <CardContent className="p-4 space-y-3">
-        {/* Short Link Row */}
         <div className="flex items-center justify-between gap-2 p-2 rounded-md bg-muted/50 border border-border/50">
           <code className="text-sm font-semibold truncate text-primary">
             /{data.shortCode}
@@ -64,13 +58,10 @@ export default function GalleryCard({ data }) {
             size="icon"
             variant="ghost"
             className="h-7 w-7 text-muted-foreground hover:text-foreground"
-            onClick={handleCopy}
-          >
+            onClick={handleCopy}>
             {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
           </Button>
         </div>
-
-        {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <BarChart2 className="h-3.5 w-3.5" />
@@ -82,19 +73,15 @@ export default function GalleryCard({ data }) {
           </div>
         </div>
       </CardContent>
-
-      {/* 3. FOOTER (Actions) */}
       <CardFooter className="p-4 pt-0 flex justify-between items-center">
         <Badge variant="outline" className="font-normal text-muted-foreground">
           ID: {data._id.slice(-6)}
         </Badge>
-
         <Button
           variant="ghost"
           size="sm"
           className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 px-2"
-          onClick={handleDelete}
-        >
+          onClick={handleDelete}>
           <Trash2 className="h-4 w-4 mr-2" />
           Delete
         </Button>

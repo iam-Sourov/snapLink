@@ -10,10 +10,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase only once
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-// Export the services you need
 const auth = getAuth(app);
 
 export { app, auth };

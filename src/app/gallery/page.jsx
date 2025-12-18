@@ -1,8 +1,6 @@
-// app/gallery/page.js
 import { useQuery } from "@tanstack/react-query";
-import ImageCard from "@/components/GalleryCard";
+import GalleryCard from "@/components/cards/GalleryCard";
 
-// Mock data (replace with your MongoDB fetch logic later)
 const mockData = {
   _id: "694193a8ca623ecd8517d06e",
   publicId: "emfh5tlxfobtmcynprbn",
@@ -16,8 +14,7 @@ const mockData = {
 export default function GalleryPage() {
   return (
     <div className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {/* Use the component here */}
-      <ImageCard data={mockData} />
+      <GalleryCard data={mockData}></GalleryCard>
     </div>
   );
 }

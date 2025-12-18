@@ -6,8 +6,7 @@ export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db("snaplink_db");
-
-
+    
     const images = await db
       .collection("images")
       .find({})

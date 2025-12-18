@@ -1,4 +1,3 @@
-// app/auth/page.js
 "use client";
 
 import { useState } from "react";
@@ -17,8 +16,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
 
-// --- FIREBASE IMPORTS ---
-import { auth } from "@/lib/firebase"; // Make sure this path is correct
+import { auth } from "@/lib/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -30,7 +28,6 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
 
-  // --- HANDLE REGISTER ---
   const handleRegister = async (formData) => {
     setLoading(true);
     const name = formData.get("name");
@@ -38,25 +35,23 @@ export default function AuthPage() {
     const password = formData.get("password");
 
     try {
-      // 1. Create User in Firebase
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-      // 2. Update their profile with the Name they entered
       await updateProfile(userCredential.user, {
         displayName: name
       });
 
       alert("Account created! Logging you in...");
-      router.push("/gallery"); // Redirect to gallery after signup
+      router.push("/gallery");
     } catch (error) {
       console.error(error);
-      alert(error.message); // Show error (e.g., "Email already in use")
+      alert(error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // --- HANDLE LOGIN ---
   const handleLogin = async (formData) => {
     setLoading(true);
     const email = formData.get("email");
@@ -64,7 +59,7 @@ export default function AuthPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/gallery"); // Redirect on success
+      router.push("/gallery");
     } catch (error) {
       console.error(error);
       alert("Login Failed: " + error.message);
@@ -75,7 +70,7 @@ export default function AuthPage() {
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center px-4">
-      <div className="w-full max-w-md space-y-6"> {/* Changed max-w-100 to max-w-md for better mobile look */}
+      <div className="w-full max-w-md space-y-6"> 
 
         <div className="flex flex-col items-center space-y-2 text-center">
           <h1 className="text-3xl font-bold tracking-tighter">SnapLink</h1>
@@ -88,7 +83,6 @@ export default function AuthPage() {
             <TabsTrigger value="register">Sign Up</TabsTrigger>
           </TabsList>
 
-          {/* LOGIN TAB */}
           <TabsContent value="login">
             <Card className="border-none shadow-lg sm:border-border sm:shadow-sm">
               <CardHeader>
@@ -116,7 +110,6 @@ export default function AuthPage() {
             </Card>
           </TabsContent>
 
-          {/* REGISTER TAB */}
           <TabsContent value="register">
             <Card className="border-none shadow-lg sm:border-border sm:shadow-sm">
               <CardHeader>

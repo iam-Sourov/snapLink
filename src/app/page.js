@@ -1,18 +1,16 @@
-import UploadButton from "@/components/upload-button";
-import ImageGallery from "@/components/image-gallery";
-import { auth } from '@/lib/firebase';
-console.log("Firebase Auth Initialized:", auth);
 
+"use client";
+import Hero from '@/components/hero/Hero';
+import BentoCard from '@/components/hero/card/BentoCards';
+import React from 'react';
 
-export default function Home() {
+const page = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center p-24 gap-8">
-      <h1 className="text-4xl font-bold ">SnapLink Gallery</h1>
-
-      <UploadButton />
-
-      <ImageGallery />
-
-    </main>
+    <div>
+      <Hero></Hero>
+      <BentoCard></BentoCard>
+    </div>
   );
-}
+};
+
+export default page;
