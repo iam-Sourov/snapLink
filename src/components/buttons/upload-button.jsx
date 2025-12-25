@@ -5,8 +5,10 @@ import { CldUploadButton } from "next-cloudinary";
 import { Button } from "@/components/ui/button";
 import { addImageToDB } from "@/actions/addImage";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function UploadButton() {
+  const queryClient = useQueryClient();
 
   const handleUploadSuccess = async (result) => {
     const imageData = {
@@ -16,6 +18,7 @@ export default function UploadButton() {
     await addImageToDB(imageData);
 
     toast("Image Uploaded!");
+    queryClient.invalidateQueries({ queryKey: ["images"] });
   };
 
   return (

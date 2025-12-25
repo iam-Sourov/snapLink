@@ -1,16 +1,30 @@
 "use client";
 
-import { Copy, Trash2, ExternalLink, BarChart2, Calendar, Check } from "lucide-react";
+import {
+  Copy,
+  Trash2,
+  ExternalLink,
+  BarChart2,
+  Calendar,
+  Check,
+  Sparkles,
+  Loader,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
+import { deleteImage } from "@/actions/deleteImage";
+import Image from "next/image";
 
 export default function GalleryCard({ data }) {
   const [copied, setCopied] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const shortLink = `${typeof window !== "undefined" ? window.location.origin : ""}/${data.shortCode}`;
+  const shortLink = `${
+    typeof window !== "undefined" ? window.location.origin : ""
+  }/${data.shortCode}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shortLink);
@@ -19,30 +33,27 @@ export default function GalleryCard({ data }) {
   };
 
   const handleDelete = () => {
-    if (confirm("Are you sure you want to delete this image?")) {
-
-      console.log("Deleting", data._id);
-    }
+    startTransition(async () => {
+      await deleteImage(data._id);
+    });
   };
 
   return (
     <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300 border-border/50">
-
-      {/* 1. IMAGE SECTION */}
       <div className="relative aspect-video w-full overflow-hidden bg-muted/50">
-        <img
+        <Image
           src={data.originalUrl}
           alt={`Image ${data.shortCode}`}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          fill={true}
         />
-
-        {/* Overlay Buttons (Visible on Hover) */}
         <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
             size="icon"
             variant="secondary"
             className="h-8 w-8 bg-background/80 backdrop-blur-sm"
-            asChild>
+            asChild
+          >
             <Link href={data.originalUrl} target="_blank">
               <ExternalLink className="h-4 w-4" />
             </Link>
@@ -58,8 +69,13 @@ export default function GalleryCard({ data }) {
             size="icon"
             variant="ghost"
             className="h-7 w-7 text-muted-foreground hover:text-foreground"
-            onClick={handleCopy}>
-            {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+            onClick={handleCopy}
+          >
+            {copied ? (
+              <Check className="h-4 w-4 text-green-500" />
+            ) : (
+              <Copy className="h-4 w-4" />
+            )}
           </Button>
         </div>
         <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
@@ -74,16 +90,30 @@ export default function GalleryCard({ data }) {
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex justify-between items-center">
-        <Badge variant="outline" className="font-normal text-muted-foreground">
+        <Badge
+          variant="outline"
+          className="font-normal text-muted-foreground"
+        >
           ID: {data._id.slice(-6)}
         </Badge>
         <Button
           variant="ghost"
           size="sm"
           className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 px-2"
-          onClick={handleDelete}>
-          <Trash2 className="h-4 w-4 mr-2" />
-          Delete
+          onClick={handleDelete}
+          disabled={isPending}
+        >
+          {isPending ? (
+            <>
+              <Loader className="h-4 w-4 mr-2 animate-spin" />
+              Deleting...
+            </>
+          ) : (
+            <>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </>
+          )}
         </Button>
       </CardFooter>
     </Card>

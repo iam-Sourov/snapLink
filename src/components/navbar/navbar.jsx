@@ -2,27 +2,24 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Menu, Camera, LogOut, User as UserIcon } from "lucide-react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-
-import { useEffect, useState } from "react";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useAuth } from "@/components/authProvider/auth-provider";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, []);
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
   const handleLogout = async () => {
-    await signOut(auth);
-    window.location.reload();
+    await logout();
+    router.push("/");
   };
 
   return (
@@ -36,8 +33,12 @@ export default function Navbar() {
             <span className="hidden font-bold sm:inline-block">SnapLink</span>
           </Link>
           <div className="hidden md:flex gap-6 items-center text-sm font-medium text-muted-foreground">
-            <Link href="/gallery" className="transition-colors hover:text-foreground">Gallery</Link>
-            <Link href="/about" className="transition-colors hover:text-foreground">About</Link>
+            <Link
+              href="/gallery"
+              className="transition-colors hover:text-foreground"
+            >
+              Gallery
+            </Link>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -47,16 +48,29 @@ export default function Navbar() {
           <div className="hidden md:flex gap-2 items-center">
             {user ? (
               <div className="flex items-center gap-4">
-                <div className="text-sm font-medium">{user.displayName || "User"}</div>
-                <Button onClick={handleLogout} variant="ghost" size="sm" className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                <div className="text-sm font-medium">
+                  {user.displayName || "User"}
+                </div>
+                <Button
+                  onClick={handleLogout}
+                  variant="ghost"
+                  size="sm"
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                >
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout
                 </Button>
               </div>
             ) : (
               <>
-                <Link href="/auth"><Button variant="ghost" size="sm">Log in</Button></Link>
-                <Link href="/auth"><Button size="sm">Get Started</Button></Link>
+                <Link href="/auth">
+                  <Button variant="ghost" size="sm">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/auth">
+                  <Button size="sm">Get Started</Button>
+                </Link>
               </>
             )}
           </div>
@@ -71,9 +85,15 @@ export default function Navbar() {
             <SheetContent side="right" className="pr-0">
               <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
               <div className="flex flex-col gap-4 px-6 mt-6">
-                <Link href="/" className="font-bold text-lg">SnapLink</Link>
-                <Link href="/gallery" className="text-muted-foreground hover:text-foreground">Gallery</Link>
-                <Link href="/about" className="text-muted-foreground hover:text-foreground">About</Link>
+                <Link href="/" className="font-bold text-lg">
+                  SnapLink
+                </Link>
+                <Link
+                  href="/gallery"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Gallery
+                </Link>
                 <div className="h-px bg-border my-2" />
                 {user ? (
                   <>
@@ -81,10 +101,18 @@ export default function Navbar() {
                       <UserIcon className="h-4 w-4" />
                       {user.displayName || user.email}
                     </div>
-                    <Button onClick={handleLogout} variant="destructive" className="w-full">Log Out</Button>
+                    <Button
+                      onClick={handleLogout}
+                      variant="destructive"
+                      className="w-full"
+                    >
+                      Log Out
+                    </Button>
                   </>
                 ) : (
-                  <Link href="/auth"><Button className="w-full">Sign In</Button></Link>
+                  <Link href="/auth">
+                    <Button className="w-full">Sign In</Button>
+                  </Link>
                 )}
               </div>
             </SheetContent>

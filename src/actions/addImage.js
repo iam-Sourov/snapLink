@@ -23,6 +23,7 @@ export async function addImageToDB(imageData) {
   await collection.insertOne(newImage);
 
   revalidatePath("/");
+  revalidatePath("/gallery");
 
   return { success: true, shortCode };
 }
