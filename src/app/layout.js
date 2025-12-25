@@ -5,6 +5,8 @@ import Navbar from "@/components/navbar/navbar";
 import { ThemeProvider } from "@/components/themeProvider/theme-provider";
 import { AuthProvider } from "@/components/authProvider/auth-provider";
 import Footer from "@/components/footer/footer";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 
 export const metadata = {
   title: "SnapLink",
@@ -13,7 +15,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <QueryProvider>
           <ThemeProvider
