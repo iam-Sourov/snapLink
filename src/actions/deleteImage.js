@@ -17,6 +17,7 @@ export async function deleteImage(imageId) {
 
     if (result.deletedCount === 1) {
       revalidatePath("/");
+      revalidatePath("/gallery");
       return { success: true };
     } else {
       return { success: false, error: "Image not found" };

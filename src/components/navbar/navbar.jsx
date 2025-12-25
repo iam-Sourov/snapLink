@@ -8,7 +8,15 @@ import {
   SheetTrigger,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Menu, Camera, LogOut, User as UserIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu, Camera, LogOut, User as UserIcon, LifeBuoy, Settings } from "lucide-react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useAuth } from "@/components/authProvider/auth-provider";
 import { useRouter } from "next/navigation";
@@ -39,6 +47,12 @@ export default function Navbar() {
             >
               Gallery
             </Link>
+            <Link
+              href="/about"
+              className="transition-colors hover:text-foreground"
+            >
+              About
+            </Link>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -47,20 +61,44 @@ export default function Navbar() {
           </div>
           <div className="hidden md:flex gap-2 items-center">
             {user ? (
-              <div className="flex items-center gap-4">
-                <div className="text-sm font-medium">
-                  {user.displayName || "User"}
-                </div>
-                <Button
-                  onClick={handleLogout}
-                  variant="ghost"
-                  size="sm"
-                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Button>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
+                    <UserIcon className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user.displayName || "User"}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">
+                      <UserIcon className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
                 <Link href="/auth">
@@ -94,13 +132,19 @@ export default function Navbar() {
                 >
                   Gallery
                 </Link>
+                <Link
+                  href="/about"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  About
+                </Link>
                 <div className="h-px bg-border my-2" />
                 {user ? (
                   <>
-                    <div className="flex items-center gap-2 text-sm font-medium">
+                    <Link href="/profile" className="flex items-center gap-2 text-sm font-medium">
                       <UserIcon className="h-4 w-4" />
-                      {user.displayName || user.email}
-                    </div>
+                      Profile
+                    </Link>
                     <Button
                       onClick={handleLogout}
                       variant="destructive"
