@@ -22,6 +22,7 @@ import {
   signInWithEmailAndPassword,
   updateProfile
 } from "firebase/auth";
+import { toast } from "sonner";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -42,11 +43,11 @@ export default function AuthPage() {
         displayName: name
       });
 
-      alert("Account created! Logging you in...");
+      toast("Account created! Logging you in...");
       router.push("/gallery");
     } catch (error) {
       console.error(error);
-      alert(error.message);
+      toast(error.message);
     } finally {
       setLoading(false);
     }
@@ -62,7 +63,7 @@ export default function AuthPage() {
       router.push("/gallery");
     } catch (error) {
       console.error(error);
-      alert("Login Failed: " + error.message);
+      toast("Login Failed: " + error.message);
     } finally {
       setLoading(false);
     }
