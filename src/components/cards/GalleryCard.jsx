@@ -7,20 +7,17 @@ import {
   BarChart2,
   Calendar,
   Check,
-  Sparkles,
   Loader,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useState, useTransition } from "react";
+import { useState, memo } from "react";
 import Link from "next/link";
-import { deleteImage } from "@/actions/deleteImage";
 import Image from "next/image";
 
-export default function GalleryCard({ data }) {
+const GalleryCard = memo(function GalleryCard({ data, onDelete, isDeleting }) {
   const [copied, setCopied] = useState(false);
-  const [isPending, startTransition] = useTransition();
 
   const shortLink = `${
     typeof window !== "undefined" ? window.location.origin : ""
@@ -30,12 +27,6 @@ export default function GalleryCard({ data }) {
     navigator.clipboard.writeText(shortLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleDelete = () => {
-    startTransition(async () => {
-      await deleteImage(data._id);
-    });
   };
 
   return (
@@ -100,10 +91,10 @@ export default function GalleryCard({ data }) {
           variant="ghost"
           size="sm"
           className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 px-2"
-          onClick={handleDelete}
-          disabled={isPending}
+          onClick={() => onDelete(data._id)}
+          disabled={isDeleting}
         >
-          {isPending ? (
+          {isDeleting ? (
             <>
               <Loader className="h-4 w-4 mr-2 animate-spin" />
               Deleting...
@@ -118,4 +109,6 @@ export default function GalleryCard({ data }) {
       </CardFooter>
     </Card>
   );
-}
+});
+
+export default GalleryCard;

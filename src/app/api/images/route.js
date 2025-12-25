@@ -1,15 +1,19 @@
-// app/api/images/route.js
 import clientPromise from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request) {
   try {
     const client = await clientPromise;
     const db = client.db("snaplink_db");
     
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    const query = userId ? { userId } : {};
+
     const images = await db
       .collection("images")
-      .find({})
+      .find(query)
       .sort({ createdAt: -1 })
       .toArray();
 
